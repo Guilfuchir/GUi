@@ -1,0 +1,107 @@
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Book {
+    private String title;
+    private String author;
+    private String barcode;
+    private boolean checkedOut;
+
+    public Book(String title, String author, String barcode, boolean checkedOut) {
+        this.title = title;
+        this.author = author;
+        this.barcode = barcode;
+        this.checkedOut = checkedOut;
+    }
+
+    @Override
+    public String toString() {
+        return "Title: " + title + ", Author: " + author + ", Barcode: " + barcode + ", Checked Out: " + checkedOut;
+    }
+}
+
+public class LibraryManagementSystem {
+    private ArrayList<Book> books = new ArrayList<>();
+
+    public LibraryManagementSystem() {
+        JFrame frame = new JFrame("Library Management System");
+        frame.setSize(500, 400);
+        frame.setLayout(null);
+
+        JLabel fileLabel = new JLabel("Enter file name:");
+        fileLabel.setBounds(10, 10, 120, 25);
+        frame.add(fileLabel);
+
+        JTextField fileEntry = new JTextField();
+        fileEntry.setBounds(140, 10, 200, 25);
+        frame.add(fileEntry);
+
+        JButton addFileButton = new JButton("Add Books from File");
+        addFileButton.setBounds(10, 40, 150, 25);
+        addFileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String filename = fileEntry.getText();
+                try {
+                    File file = new File(filename);
+                    Scanner scanner = new Scanner(file);
+                    while (scanner.hasNextLine()) {
+                        String line = scanner.nextLine();
+                        String[] parts = line.split(",");
+                        String title = parts[0].trim();
+                        String author = parts[1].trim();
+                        String barcode = parts[2].trim();
+                        Book book = new Book(title, author, barcode, false);
+                        books.add(book);
+                    }
+                    scanner.close();
+                    displayDatabase();
+                } catch (FileNotFoundException ex) {
+                    JOptionPane.showMessageDialog(frame, "File not found.");
+                }
+            }
+        });
+        frame.add(addFileButton);
+
+        JTextArea databaseDisplay = new JTextArea();
+        databaseDisplay.setBounds(10, 70, 400, 200);
+        frame.add(databaseDisplay);
+
+        JButton exitButton = new JButton("Exit");
+        exitButton.setBounds(200, 300, 80, 25);
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+            }
+        });
+        frame.add(exitButton);
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
+
+    private void displayDatabase() {
+        StringBuilder databaseContent = new StringBuilder();
+        for (Book book : books) {
+            String bookDetail = book.toString();
+            databaseContent.append(bookDetail).append("\n");
+        }
+        JTextArea databaseDisplay = new JTextArea();
+        databaseDisplay.setText(databaseContent.toString());
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new LibraryManagementSystem();
+            }
+        });
+    }
+}

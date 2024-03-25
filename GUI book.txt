@@ -1,0 +1,18 @@
+class Book {
+    private String title;
+    private String author;
+    private String barcode;
+    private boolean checkedOut;
+
+    public Book(String title, String author, String barcode, boolean checkedOut) {
+        this.title = title;
+        this.author = author;
+        this.barcode = barcode;
+        this.checkedOut = checkedOut;
+    }
+
+    @Override
+    public String toString() {
+        return "Title: " + title + ", Author: " + author + ", Barcode: " + barcode + ", Checked Out: " + checkedOut;
+    }
+}
